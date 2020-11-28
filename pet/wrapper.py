@@ -32,12 +32,40 @@ from transformers import InputExample, AdamW, get_linear_schedule_with_warmup, P
     GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
 from transformers import __version__ as transformers_version
 
-import log
+# import log
 from pet import preprocessor
 from pet.tasks import TASK_HELPERS
 from pet.utils import InputFeatures, DictDataset, distillation_loss
 
-logger = log.get_logger('root')
+import logging
+
+names = set()
+
+def __setup_custom_logger(name: str) -> logging.Logger:
+    root_logger = logging.getLogger()
+    root_logger.handlers.clear()
+
+    formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
+
+    names.add(name)
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+    return logger
+
+
+def get_logger(name: str) -> logging.Logger:
+    if name in names:
+        return logging.getLogger(name)
+    else:
+        return __setup_custom_logger(name)
+
+
+logger = get_logger('root')
 
 CONFIG_NAME = 'wrapper_config.json'
 SEQUENCE_CLASSIFIER_WRAPPER = "sequence_classifier"
