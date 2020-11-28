@@ -54,7 +54,7 @@ def get_logger(name: str) -> logging.Logger:
         return __setup_custom_logger(name)
 
 
-logger = log.get_logger('root')
+logger = get_logger('root')
 
 
 def _shuffle_and_restrict(examples: List[InputExample], num_examples: int, seed: int = 42) -> List[InputExample]:
